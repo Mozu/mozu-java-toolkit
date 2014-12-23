@@ -1,28 +1,29 @@
 package com.mozu.base.models;
 
 public class AppInfo {
-	private String NameSpace;
-    private String Version;
-    private String Package;
+	private String nameSpace;
+    private String version;
+    private String packageName;
     private String buildVersion;
+    private String mozuSdkVersion;
      
 	public String getNameSpace() {
-		return NameSpace;
+		return nameSpace;
 	}
 	public void setNameSpace(String nameSpace) {
-		NameSpace = nameSpace;
+		this.nameSpace = nameSpace;
 	}
 	public String getVersion() {
-		return Version;
+		return version;
 	}
 	public void setVersion(String version) {
-		Version = version;
+		this.version = version;
 	}
 	public String getPackage() {
-		return Package;
+		return packageName;
 	}
 	public void setPackage(String package1) {
-		Package = package1;
+		packageName = package1;
 	}
 	public String getBuildVersion() {
 		return buildVersion;
@@ -30,8 +31,16 @@ public class AppInfo {
 	public void setBuildVersion(String buildVersion) {
 		this.buildVersion = buildVersion;
 	}
-     
-	
-	
-     
+    public String getMozuSdkVersion() {
+        return mozuSdkVersion;
+    }
+    public void setMozuSdkVersion(String mozuSdkVersion) {
+        this.mozuSdkVersion = mozuSdkVersion;
+    }
+    public String getPackageName() {
+        return packageName;
+    }
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
 }

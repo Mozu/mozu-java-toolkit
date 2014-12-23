@@ -15,7 +15,7 @@ if (hasProperty("teamcity")) {
     }
     else {
 // Manually insert the version numbers here when building outside of TeamCity
-    version = '1.0.16'
+    version = '1.0.17'
 }
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
@@ -69,7 +69,7 @@ dependencies {
     compile ("org.springframework.batch:spring-batch-core:2.2.3.RELEASE");
     compile ("org.springframework.integration:spring-integration-core:3.0.2.RELEASE");
 
-    compile ("com.mozu:mozu-api-java:1.13.0") {
+    compile ("com.mozu:mozu-api-java:1.13.1") {
         exclude group: 'mysql'
         exclude group: 'xerces'
         exclude group: 'berkeleydb'
@@ -87,7 +87,7 @@ dependencies {
     compile ('org.jasypt:jasypt:1.9.2')
 
     testCompile 'com.googlecode.jmockit:jmockit:1.7'
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 test {
