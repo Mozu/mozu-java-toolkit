@@ -8,14 +8,15 @@ import java.util.Enumeration;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.mozu.api.security.AppAuthenticator;
-import com.mozu.logger.MozuAppLogger;
+import com.mozu.base.utils.MozuAppLoggerWrapper;
 
 @Component
 public class BaseServletListener implements ServletContextListener{
-	private static final MozuAppLogger logger = MozuAppLogger.getLogger(BaseServletListener.class);
+	private static final Logger logger = MozuAppLoggerWrapper.getLogger(BaseServletListener.class);
 	
 	public void contextDestroyed(ServletContextEvent sce) {
 		AppAuthenticator.invalidateAuth();

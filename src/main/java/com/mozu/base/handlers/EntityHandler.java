@@ -3,6 +3,7 @@ package com.mozu.base.handlers;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,10 +16,10 @@ import com.mozu.api.utils.JsonUtils;
 import com.mozu.base.models.AppInfo;
 import com.mozu.base.models.EntityCollection;
 import com.mozu.base.utils.ApplicationUtils;
-import com.mozu.logger.MozuAppLogger;
+import com.mozu.base.utils.MozuAppLoggerWrapper;
 
 public class EntityHandler<TObj> {
-	private static final MozuAppLogger logger = MozuAppLogger.getLogger(EntityHandler.class);
+	private static final Logger logger = MozuAppLoggerWrapper.getLogger(EntityHandler.class);
 	private ObjectMapper mapper = JsonUtils.initObjectMapper();
 	private AppInfo appInfo = null;
 	

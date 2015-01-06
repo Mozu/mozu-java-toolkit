@@ -8,14 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.mozu.logger.MozuAppLogger;
+import com.mozu.base.utils.MozuAppLoggerWrapper;
 
 public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter {
 
-    private static final MozuAppLogger logger = MozuAppLogger.getLogger(ConfigurationSecurityInterceptor.class);
+    private static final Logger logger = MozuAppLoggerWrapper.getLogger(ConfigurationSecurityInterceptor.class);
 
     @Value("${SharedSecret}")
     String sharedSecret;

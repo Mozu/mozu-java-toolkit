@@ -8,15 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 
 import com.mozu.api.ApiContext;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.security.AppAuthenticator;
 import com.mozu.api.security.Crypto;
-import com.mozu.logger.MozuAppLogger;
+import com.mozu.base.utils.MozuAppLoggerWrapper;
 
 public class AdminControllerHelper {
-    private static final MozuAppLogger logger = MozuAppLogger.getLogger(AdminControllerHelper.class);
+    private static final Logger logger = MozuAppLoggerWrapper.getLogger(AdminControllerHelper.class);
     
     protected static final String SECURITY_COOKIE = "MozuToken";
     
