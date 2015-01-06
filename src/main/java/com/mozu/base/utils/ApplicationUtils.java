@@ -4,6 +4,7 @@ import com.mozu.api.ApiContext;
 import com.mozu.api.ApiError;
 import com.mozu.api.ApiException;
 import com.mozu.api.MozuApiContext;
+import com.mozu.api.Version;
 import com.mozu.api.contracts.sitesettings.application.Application;
 import com.mozu.api.contracts.sitesettings.application.Capability;
 import com.mozu.api.resources.commerce.settings.ApplicationResource;
@@ -18,13 +19,16 @@ public class ApplicationUtils {
     
     public static AppInfo getAppInfo() {
     	if (_appInfo == null) {
+            _appInfo = new AppInfo();
+            _appInfo.setMozuSdkVersion(Version.API_VERSION);
     		String applicationId = AppAuthenticator.getInstance().getAppAuthInfo().getApplicationId();
     		String[] parts = applicationId.split( "\\." );
 
-    		if (parts.length < 4) return null;
+    		if (parts.length < 4) 
+    		    return _appInfo;
 
-    		_appInfo = new AppInfo();
-         
+    		StringBuffer appVersion = new StringBuffer().append(parts[parts.length - 4]).append(".").append(parts[parts.length - 3]).append(".").append(parts[parts.length - 2]);
+    		_appInfo.setVersion(appVersion.toString());        
     		_appInfo.setNameSpace(parts[0]);
     		_appInfo.setPackage(parts[parts.length - 1]);
     	}
