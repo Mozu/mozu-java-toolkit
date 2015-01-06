@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.mozu.api.MozuApiContext;
 import com.mozu.api.events.model.EventHandlerStatus;
 import com.mozu.api.events.service.EventService;
+import com.mozu.logger.LoggerContextManager;
 
 @Controller
 public class EventController {
@@ -30,8 +32,11 @@ public class EventController {
     @RequestMapping(value = "/events", method = RequestMethod.POST, consumes="application/json" )
     public ResponseEntity<String> processEventRequest (HttpServletRequest httpRequest) {
         
+        LoggerContextManager.setApiContext(new MozuApiContext(httpRequest));
+
         EventService eventService = new EventService();
         EventHandlerStatus handlerStatus = eventService.dispatchEvent(httpRequest);
+        LoggerContextManager.endThread();
         if (handlerStatus.getMessage()==null) {
             return new ResponseEntity<String>(HttpStatus.valueOf(handlerStatus.getStatus()));
         } else {

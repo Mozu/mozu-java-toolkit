@@ -1,8 +1,5 @@
 package com.mozu.base.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mozu.api.ApiContext;
 import com.mozu.api.ApiError;
 import com.mozu.api.ApiException;
@@ -12,9 +9,10 @@ import com.mozu.api.contracts.sitesettings.application.Capability;
 import com.mozu.api.resources.commerce.settings.ApplicationResource;
 import com.mozu.api.security.AppAuthenticator;
 import com.mozu.base.models.AppInfo;
+import com.mozu.logger.MozuAppLogger;
 
 public class ApplicationUtils {
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationUtils.class);
+    private static final MozuAppLogger logger = MozuAppLogger.getLogger(ApplicationUtils.class);
     
     private static AppInfo _appInfo = null;
     

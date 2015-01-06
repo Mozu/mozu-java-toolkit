@@ -4,8 +4,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +11,11 @@ import com.mozu.api.MozuConfig;
 import com.mozu.api.contracts.appdev.AppAuthInfo;
 import com.mozu.api.security.AppAuthenticator;
 import com.mozu.api.utils.MozuHttpClientPool;
+import com.mozu.logger.MozuAppLogger;
 
 @Component
 public class MozuAppAuthenticator {
-	private static final Logger logger = LoggerFactory.getLogger(MozuAppAuthenticator.class);
+	private static final MozuAppLogger logger = MozuAppLogger.getLogger(MozuAppAuthenticator.class);
 	
 	@Value("${ApplicationId}")
 	String applicationId;
