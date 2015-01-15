@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,7 @@ public class BaseServletListener implements ServletContextListener{
                 logger.warn("Error deregistering driver: " + e.getMessage());
             }
         }
+        LogManager.shutdown();
 	}
 
     @Override
