@@ -31,7 +31,6 @@ public class BaseServletListener implements ServletContextListener{
                 logger.warn("Error deregistering driver: " + e.getMessage());
             }
         }
-        LogManager.shutdown();
 	}
 
     @Override
