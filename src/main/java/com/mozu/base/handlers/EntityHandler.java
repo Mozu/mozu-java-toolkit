@@ -103,10 +103,16 @@ public class EntityHandler<TObj> {
 	}
 
 	
-	@SuppressWarnings("unchecked")
     public EntityCollection<TObj> getEntityCollection(Integer tenantId,String entityName, 
 			String filterCriteria, String sortBy,Integer startIndex, Integer pageSize) throws Exception {
-		EntityResource entityResource = new EntityResource(new MozuApiContext(tenantId));
+	    return getEntityCollection(new MozuApiContext(tenantId), entityName, filterCriteria, sortBy, startIndex, pageSize);
+	}
+	
+    @SuppressWarnings("unchecked")
+    public EntityCollection<TObj> getEntityCollection(ApiContext apiContext ,String entityName, 
+	            String filterCriteria, String sortBy,Integer startIndex, Integer pageSize) throws Exception {
+	    
+		EntityResource entityResource = new EntityResource(apiContext);
 		EntityCollection<TObj> collection = null;
 		String entityNameFQN = getEntityFQN(entityName);
 		try {
