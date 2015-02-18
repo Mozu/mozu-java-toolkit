@@ -62,7 +62,7 @@ public class EntitySchemaHandler {
 			entityList.setIndexA(indexedProperties.size() >=1 ? indexedProperties.get(0) : null);
 			entityList.setIndexB(indexedProperties.size() >=2 ? indexedProperties.get(1) : null);
 			entityList.setIndexC(indexedProperties.size() >=3 ? indexedProperties.get(2) : null);
-			entityList.setIndexB(indexedProperties.size() >=4 ? indexedProperties.get(3) : null);
+			entityList.setIndexD(indexedProperties.size() >=4 ? indexedProperties.get(3) : null);
 		}
 		
 		EntityList existing = getEntityList(apiContext, entityList.getName());
