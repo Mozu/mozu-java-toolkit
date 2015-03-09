@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mozu.api.ApiContext;
 import com.mozu.api.ApiException;
 import com.mozu.api.MozuApiContext;
 import com.mozu.api.resources.platform.entitylists.EntityResource;
@@ -32,14 +33,18 @@ public class EntityHandler<TObj> {
 	
 	
 	public TObj upsertEntity(Integer tenantId, String entityName, String id,TObj obj) throws Exception {
+	    return upsertEntity(new MozuApiContext(tenantId), entityName, id, obj);
+	}
+    public TObj upsertEntity(ApiContext apiContext, String entityName, String id,TObj obj) throws Exception {
+	    
 		ObjectNode node = mapper.valueToTree(obj);
 		String entityNameFQN = getEntityFQN(entityName);
 		
 		// Add the mapping entry
-		EntityResource entityResource = new EntityResource(new MozuApiContext(tenantId));
+		EntityResource entityResource = new EntityResource(apiContext);
 		try {
 
-			TObj existing = (TObj) getEntity(tenantId, entityNameFQN, id);
+			TObj existing = (TObj) getEntity(apiContext, entityNameFQN, id);
 			
 			if (existing == null) {
 				entityResource.insertEntity(node, entityNameFQN);
@@ -54,11 +59,14 @@ public class EntityHandler<TObj> {
 		return obj;
 	}
 	
+    public void deleteEntity(Integer tenantId, String entityName, String id) throws Exception {
+        deleteEntity(new MozuApiContext(tenantId), entityName, id);
+    }
 
-	public void deleteEntity(Integer tenantId, String entityName, String id) throws Exception {
+	public void deleteEntity(ApiContext apiContext, String entityName, String id) throws Exception {
 		String entityNameFQN = getEntityFQN(entityName);
 		// Add the mapping entry
-		EntityResource entityResource = new EntityResource(new MozuApiContext(tenantId));
+		EntityResource entityResource = new EntityResource(apiContext);
 		try {
 			entityResource.deleteEntity(entityNameFQN, id);
 		} catch (Exception e) {
@@ -68,7 +76,11 @@ public class EntityHandler<TObj> {
 	}
 
 	public TObj getEntity(Integer tenantId, String entityName, String id) throws Exception {
-		EntityResource entityResource = new EntityResource(new MozuApiContext(tenantId));
+	    return getEntity(new MozuApiContext(tenantId), entityName, id);
+	}
+	
+	public TObj getEntity(ApiContext apiContext, String entityName, String id) throws Exception {
+		EntityResource entityResource = new EntityResource(apiContext);
 		JsonNode entity = null;
 		TObj returnValue = null;
 		String entityNameFQN = getEntityFQN(entityName);
@@ -91,9 +103,16 @@ public class EntityHandler<TObj> {
 	}
 
 	
-	public EntityCollection<TObj> getEntityCollection(Integer tenantId,String entityName, 
+    public EntityCollection<TObj> getEntityCollection(Integer tenantId,String entityName, 
 			String filterCriteria, String sortBy,Integer startIndex, Integer pageSize) throws Exception {
-		EntityResource entityResource = new EntityResource(new MozuApiContext(tenantId));
+	    return getEntityCollection(new MozuApiContext(tenantId), entityName, filterCriteria, sortBy, startIndex, pageSize);
+	}
+	
+    @SuppressWarnings("unchecked")
+    public EntityCollection<TObj> getEntityCollection(ApiContext apiContext ,String entityName, 
+	            String filterCriteria, String sortBy,Integer startIndex, Integer pageSize) throws Exception {
+	    
+		EntityResource entityResource = new EntityResource(apiContext);
 		EntityCollection<TObj> collection = null;
 		String entityNameFQN = getEntityFQN(entityName);
 		try {
