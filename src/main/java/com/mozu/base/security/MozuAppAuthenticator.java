@@ -13,6 +13,7 @@ import com.mozu.api.MozuConfig;
 import com.mozu.api.contracts.appdev.AppAuthInfo;
 import com.mozu.api.security.AppAuthenticator;
 import com.mozu.api.utils.MozuHttpClientPool;
+import com.mozu.encryptor.PropertyEncryptionUtil;
 
 @Component
 public class MozuAppAuthenticator {
@@ -24,21 +25,24 @@ public class MozuAppAuthenticator {
     String sharerdSecret;
     @Value("${BaseAuthAppUrl}")
     String baseAppAuthUrl;
+    @Value("${spice}")
+    String spice;
 	
 	@PostConstruct
 	public void appAuthentication() {
 		
 		logger.info("Authenticating Application in Mozu...");
 		try {
-			
+			String realSharedSecret = PropertyEncryptionUtil.decryptProperty(spice,  sharerdSecret);
             AppAuthInfo appAuthInfo = new AppAuthInfo();
             appAuthInfo.setApplicationId(applicationId);
-            appAuthInfo.setSharedSecret(sharerdSecret);
+            appAuthInfo.setSharedSecret(realSharedSecret);
             if (!StringUtils.isEmpty(baseAppAuthUrl))
             	MozuConfig.setBaseUrl(baseAppAuthUrl);
             AppAuthenticator.initialize(appAuthInfo);
             logger.info("Auth ticket : "+AppAuthenticator.getInstance().getAppAuthTicket().getAccessToken());
             logger.info("Application authenticated");
+            realSharedSecret = "";
 		} catch(Exception exc) {
 			logger.error(exc.getMessage(), exc);
 		}

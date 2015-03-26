@@ -15,7 +15,7 @@ if (hasProperty("teamcity")) {
     }
     else {
 // Manually insert the version numbers here when building outside of TeamCity
-    version = '1.0.18'
+    version = '1.0.20-SNAPSHOT'
 }
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
@@ -69,6 +69,7 @@ dependencies {
     compile ("org.springframework.batch:spring-batch-core:2.2.3.RELEASE");
     compile ("org.springframework.integration:spring-integration-core:3.0.2.RELEASE");
 
+    compile ('com.mozu:mozu-java-security:1.0.0')
     compile ("com.mozu:mozu-api-java:1.14.0") {
         exclude group: 'mysql'
         exclude group: 'xerces'
