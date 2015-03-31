@@ -1,10 +1,10 @@
 package com.mozu.base.handlers;
 
 
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.stereotype.Component;
 
 import com.mozu.api.security.AppAuthenticator;
+import com.mozu.encryptor.EncryptionUtil;
 
 @Component
 /**
@@ -19,7 +19,7 @@ public class EncryptDecryptHandler {
      * @param value the value to encrypt
      * @return an encrypted String
      */
-	public String encrypt( String value)  {
+	public String encrypt(String value)  {
 		return encrypt(null, value);
 	}
 	
@@ -34,15 +34,13 @@ public class EncryptDecryptHandler {
             throw new IllegalArgumentException("String to be encrypted required");
         }
 		
-		BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-
 		String sharedSecret = AppAuthenticator.getInstance().getAppAuthInfo().getSharedSecret();
 		if (sharedSecret==null && key==null) {
 		    throw new IllegalArgumentException("Password key required");
 		}
-		textEncryptor.setPassword(sharedSecret+key);
+		String newKey = sharedSecret+key;
 		
-		return textEncryptor.encrypt(value);
+		return EncryptionUtil.encrypt(newKey, value);
 	}
 	
 	/**
@@ -65,10 +63,9 @@ public class EncryptDecryptHandler {
 	        throw new IllegalArgumentException("String to be decrypted required");
 	    }
 		
-		BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-		textEncryptor.setPassword(AppAuthenticator.getInstance().getAppAuthInfo().getSharedSecret()+key);
+		String pw = AppAuthenticator.getInstance().getAppAuthInfo().getSharedSecret()+key;
 		
-		return textEncryptor.decrypt(encryptedStr);
+		return EncryptionUtil.decrypt(pw, encryptedStr);
 	}
 	
 }

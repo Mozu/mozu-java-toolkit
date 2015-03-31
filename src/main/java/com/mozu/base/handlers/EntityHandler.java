@@ -87,7 +87,9 @@ public class EntityHandler<TObj> {
 		try {
 			JavaType type = mapper.getTypeFactory().constructType(targetClass);
 			entity = entityResource.getEntity(entityNameFQN, id);
-			returnValue = mapper.readValue(entity.toString(), type);
+			if (entity!=null) {
+			    returnValue = mapper.readValue(entity.toString(), type);
+			}
 		} catch (ApiException e) {
 			if (e.getApiError() == null || !StringUtils.equals(e.getApiError().getErrorCode(),
 					"ITEM_NOT_FOUND")) {

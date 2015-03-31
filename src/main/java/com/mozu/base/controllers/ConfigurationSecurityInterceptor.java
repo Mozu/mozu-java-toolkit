@@ -9,17 +9,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.mozu.base.utils.MozuAppLoggerWrapper;
+import com.mozu.encryptor.PropertyEncryptionUtil;
 
 public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter {
 
-    private static final Logger logger = MozuAppLoggerWrapper.getLogger(ConfigurationSecurityInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationSecurityInterceptor.class);
 
     @Value("${SharedSecret}")
     String sharedSecret;
+    
+    @Value("${spice}")
+    String spiceKey;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -33,7 +37,8 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
             if (cookies[i].getName().equals(AdminControllerHelper.SECURITY_COOKIE)) {
                 securityToken = cookies[i].getValue();
                 try {
-                    String decryptedValue = decrypt(securityToken, sharedSecret);
+                    
+                    String decryptedValue = decrypt(securityToken, PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret));
                     DateTime dt = new DateTime(decryptedValue);
                     
                     // Validate date
@@ -59,7 +64,6 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     
     public static String encrypt(String data, String sharedSecret) throws Exception {
         int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
-        
         String keyString = sharedSecret.substring(sharedSecret.length()-keyLength);
         
         SecretKeySpec key = new SecretKeySpec(keyString.getBytes(), "Blowfish");
