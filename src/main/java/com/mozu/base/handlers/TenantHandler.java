@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mozu.api.ApiException;
@@ -14,10 +15,9 @@ import com.mozu.api.contracts.tenant.Tenant;
 import com.mozu.api.resources.platform.SiteDataResource;
 import com.mozu.api.resources.platform.TenantResource;
 import com.mozu.api.utils.JsonUtils;
-import com.mozu.base.utils.MozuAppLoggerWrapper;
 
 public class TenantHandler {
-	private static final Logger logger = MozuAppLoggerWrapper.getLogger(TenantHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(TenantHandler.class);
 	private static ObjectMapper mapper = JsonUtils.initObjectMapper();
 
 	public static Tenant getTenant(int tenantId) throws Exception {
