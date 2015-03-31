@@ -1,6 +1,7 @@
 package com.mozu.base.utils;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mozu.api.ApiContext;
 import com.mozu.api.ApiError;
@@ -14,7 +15,7 @@ import com.mozu.api.security.AppAuthenticator;
 import com.mozu.base.models.AppInfo;
 
 public class ApplicationUtils {
-    private static final Logger logger = MozuAppLoggerWrapper.getLogger(ApplicationUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationUtils.class);
     
     private static AppInfo _appInfo = null;
     
