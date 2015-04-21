@@ -127,13 +127,21 @@ public class EntityHandler<TObj> {
 												filterCriteria, sortBy, null);
 			
 			collection = new EntityCollection<TObj>();
-			collection.setPageCount(jNodeCollection.getPageCount());
-			collection.setPageSize(jNodeCollection.getPageSize());
-			collection.setStartIndex(jNodeCollection.getStartIndex());
-			collection.setTotalCount(jNodeCollection.getTotalCount());
-			JavaType type = mapper.getTypeFactory().constructCollectionType(ArrayList.class, targetClass);
-			ArrayList<TObj> items = (ArrayList<TObj>)mapper.readValue(jNodeCollection.getItems().toString(), type); 
-			collection.setItems(items);
+			if (jNodeCollection != null) {
+    			collection.setPageCount(jNodeCollection.getPageCount());
+    			collection.setPageSize(jNodeCollection.getPageSize());
+    			collection.setStartIndex(jNodeCollection.getStartIndex());
+    			collection.setTotalCount(jNodeCollection.getTotalCount());
+    			JavaType type = mapper.getTypeFactory().constructCollectionType(ArrayList.class, targetClass);
+    			ArrayList<TObj> items = (ArrayList<TObj>)mapper.readValue(jNodeCollection.getItems().toString(), type); 
+    			collection.setItems(items);
+			} else {
+                collection.setPageCount(0);
+                collection.setPageSize(pageSize);
+                collection.setStartIndex(0);
+                collection.setTotalCount(0);
+                collection.setItems(new ArrayList<TObj>());
+			}
 		} catch (ApiException e) {
 			if (e.getApiError() == null || !StringUtils.equals(e.getApiError().getErrorCode(),
 					"ITEM_NOT_FOUND")) {
