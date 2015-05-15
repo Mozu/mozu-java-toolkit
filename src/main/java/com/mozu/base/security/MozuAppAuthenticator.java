@@ -18,14 +18,13 @@ import com.mozu.encryptor.PropertyEncryptionUtil;
 @Component
 public class MozuAppAuthenticator {
 	private static final Logger logger = LoggerFactory.getLogger(MozuAppAuthenticator.class);
-	
 	@Value("${ApplicationId}")
 	String applicationId;
     @Value("${SharedSecret}")
     String sharerdSecret;
     @Value("${BaseAuthAppUrl}")
     String baseAppAuthUrl;
-    @Value("${spice}")
+    @Value("${spice: }")
     String spice;
 	
 	@PostConstruct
