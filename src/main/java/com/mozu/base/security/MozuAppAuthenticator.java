@@ -25,6 +25,8 @@ public class MozuAppAuthenticator {
     String sharerdSecret;
     @Value("${BaseAuthAppUrl}")
     String baseAppAuthUrl;
+    @Value("${BasePciUrl}")
+    String basePciUrl;
     @Value("${spice}")
     String spice;
 	
@@ -37,8 +39,13 @@ public class MozuAppAuthenticator {
             AppAuthInfo appAuthInfo = new AppAuthInfo();
             appAuthInfo.setApplicationId(applicationId);
             appAuthInfo.setSharedSecret(realSharedSecret);
+            
             if (!StringUtils.isEmpty(baseAppAuthUrl))
             	MozuConfig.setBaseUrl(baseAppAuthUrl);
+            
+            if (!StringUtils.isEmpty(basePciUrl))
+            	MozuConfig.setBasePciUrl(basePciUrl);
+            
             AppAuthenticator.initialize(appAuthInfo);
             logger.info("Auth ticket : "+AppAuthenticator.getInstance().getAppAuthTicket().getAccessToken());
             logger.info("Application authenticated");
