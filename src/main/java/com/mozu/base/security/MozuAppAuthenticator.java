@@ -18,7 +18,6 @@ import com.mozu.encryptor.PropertyEncryptionUtil;
 @Component
 public class MozuAppAuthenticator {
 	private static final Logger logger = LoggerFactory.getLogger(MozuAppAuthenticator.class);
-	
 	@Value("${ApplicationId}")
 	String applicationId;
     @Value("${SharedSecret}")
@@ -27,7 +26,7 @@ public class MozuAppAuthenticator {
     String baseAppAuthUrl;
     @Value("${BasePciUrl}")
     String basePciUrl;
-    @Value("${spice}")
+    @Value("${spice: }")
     String spice;
 	
 	@PostConstruct
