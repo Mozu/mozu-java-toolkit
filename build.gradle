@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.6
 
 archivesBaseName='mozu-api-toolkit'
 group='com.mozu'
