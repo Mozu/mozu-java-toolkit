@@ -22,7 +22,7 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     @Value("${SharedSecret}")
     String sharedSecret;
     
-    @Value("${spice}")
+    @Value("${spice: }")
     String spiceKey;
 
     @Override

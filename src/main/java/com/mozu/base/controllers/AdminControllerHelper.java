@@ -59,9 +59,8 @@ public class AdminControllerHelper {
                 isAuthorized = true;
             }
             String realSharedSecret = sharedSecret;
-            if (StringUtils.isNotBlank(spiceKey)) {
-                realSharedSecret = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
-            }
+            realSharedSecret = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
+           
             httpResponse.addCookie(new Cookie(SECURITY_COOKIE, 
                     ConfigurationSecurityInterceptor.encrypt(DateTime.now().toString(), 
                             realSharedSecret)));
