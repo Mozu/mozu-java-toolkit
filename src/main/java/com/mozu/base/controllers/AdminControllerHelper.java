@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,8 @@ public class AdminControllerHelper {
     private String sharedSecret;
     private String spiceKey;
 
-    protected static final String SECURITY_COOKIE = "MozuToken";
+    public static final String SECURITY_COOKIE = "MozuToken";
+    public static final String TENANT_ID_COOKIE = "MozuTenant";
     
     private String body = null;
     public AdminControllerHelper() {
@@ -58,12 +58,14 @@ public class AdminControllerHelper {
             } else {
                 isAuthorized = true;
             }
-            String realSharedSecret = sharedSecret;
-            realSharedSecret = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
+            
+            String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
            
             httpResponse.addCookie(new Cookie(SECURITY_COOKIE, 
                     ConfigurationSecurityInterceptor.encrypt(DateTime.now().toString(), 
-                            realSharedSecret)));
+                    		encryptKey, tenantId)));
+            httpResponse.addCookie(new Cookie(TENANT_ID_COOKIE, tenantId));
+
         } catch (Exception e) {
             logger.warn("Validation exception: " + e.getMessage());
             isAuthorized = false;

@@ -21,10 +21,10 @@ public class MozuAppAuthenticator {
 	@Value("${ApplicationId}")
 	String applicationId;
     @Value("${SharedSecret}")
-    String sharerdSecret;
-    @Value("${BaseAuthAppUrl}")
+    String sharedSecret;
+    @Value("${BaseAuthAppUrl: }")
     String baseAppAuthUrl;
-    @Value("${BasePciUrl}")
+    @Value("${BasePciUrl: }")
     String basePciUrl;
     @Value("${spice: }")
     String spice;
@@ -34,7 +34,7 @@ public class MozuAppAuthenticator {
 		
 		logger.info("Authenticating Application in Mozu...");
 		try {
-			String realSharedSecret = PropertyEncryptionUtil.decryptProperty(spice,  sharerdSecret);
+			String realSharedSecret = PropertyEncryptionUtil.decryptProperty(spice,  sharedSecret);
             AppAuthInfo appAuthInfo = new AppAuthInfo();
             appAuthInfo.setApplicationId(applicationId);
             appAuthInfo.setSharedSecret(realSharedSecret);
@@ -53,6 +53,16 @@ public class MozuAppAuthenticator {
 			logger.error(exc.getMessage(), exc);
 		}
 		
+	}
+	
+	/** 
+	 * Get the key to encrypt user session keys
+	 * @param tenantId
+	 * @return
+	 */
+	public String getSessionKey (String tenantId) {
+        String encryptKey = String.format("%s%s",PropertyEncryptionUtil.decryptProperty(spice, sharedSecret), tenantId);
+        return encryptKey;
 	}
 
     @PreDestroy
