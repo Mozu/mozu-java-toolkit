@@ -31,26 +31,28 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         logger.debug("Security interceptor for URI: " + request.getRequestURI());
         String securityToken = null;
         boolean isValid = false;
+        String tenantId = null;
+        String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
 
         Cookie[] cookies = request.getCookies();
         for (int i=0;i<cookies.length;i++) {
             if (cookies[i].getName().equals(AdminControllerHelper.SECURITY_COOKIE)) {
                 securityToken = cookies[i].getValue();
-                try {
-                    
-                    String decryptedValue = decrypt(securityToken, PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret));
-                    DateTime dt = new DateTime(decryptedValue);
-                    
-                    // Validate date
-                    if (dt.isAfter(DateTime.now().minusDays(1))) {
-                        isValid=true;
-                    }
-                    break;
-                } catch (Exception e) {
-                    logger.error("Decryption exception: " + e.getMessage());
-                    break;
-                }
             }
+            if (cookies[i].getName().equals(AdminControllerHelper.TENANT_ID_COOKIE)) {
+                tenantId = cookies[i].getValue();
+            }
+        }
+        try {
+            String decryptedValue = decrypt(securityToken, encryptKey, tenantId);
+            DateTime dt = new DateTime(decryptedValue);
+            
+            // Validate date
+            if (dt.isAfter(DateTime.now().minusDays(1))) {
+                isValid=true;
+            }
+        } catch (Exception e) {
+            logger.error("Decryption exception: " + e.getMessage());
         }
         
         if (!isValid) {
@@ -62,9 +64,10 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         return isValid;
     }
     
-    public static String encrypt(String data, String sharedSecret) throws Exception {
+    public static String encrypt(String data, String sharedSecret, String tenantId) throws Exception {
         int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
-        String keyString = sharedSecret.substring(sharedSecret.length()-keyLength);
+        String startKeyString = String.format("%s%s", sharedSecret, tenantId);
+        String keyString = startKeyString.substring(startKeyString.length()-keyLength);
         
         SecretKeySpec key = new SecretKeySpec(keyString.getBytes(), "Blowfish");
         Cipher cipher = Cipher.getInstance("Blowfish");
@@ -73,10 +76,10 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         return Base64.encodeBase64String(encrypted);
     }
 
-    protected static String decrypt(String encryptedString, String sharedSecret) throws Exception {
+    protected static String decrypt(String encryptedString, String sharedSecret, String tenantId) throws Exception {
         int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
-        
-        String keyString = sharedSecret.substring(sharedSecret.length()-keyLength);
+        String startKeyString = String.format("%s%s", sharedSecret, tenantId);
+        String keyString = startKeyString.substring(startKeyString.length()-keyLength);
         
         SecretKeySpec key = new SecretKeySpec(keyString.getBytes(), "Blowfish");
         Cipher cipher = Cipher.getInstance("Blowfish");

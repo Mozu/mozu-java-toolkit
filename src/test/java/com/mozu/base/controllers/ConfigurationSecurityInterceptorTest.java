@@ -18,6 +18,7 @@ import org.junit.Test;
 public class ConfigurationSecurityInterceptorTest {
     protected static final String RESULT_URI = "/result/uri";
     protected static final String SHARED_SECRET = "ThisIsTheSharedSecret";
+    protected static final String TENANT_ID = "127";
     
     @Mocked HttpServletRequest mockHttpServletRequest;
     @Mocked HttpServletResponse mockHttpServletResponse;
@@ -47,8 +48,11 @@ public class ConfigurationSecurityInterceptorTest {
 
     @Test
     public void invalidCookieValueTest() throws Exception {
-        String encryptedValue = ConfigurationSecurityInterceptor.encrypt("Test", SHARED_SECRET); 
-        final Cookie[] cookies = {new Cookie(AdminControllerHelper.SECURITY_COOKIE, encryptedValue)};
+        String encryptedValue = ConfigurationSecurityInterceptor.encrypt("Test", SHARED_SECRET, TENANT_ID); 
+        final Cookie[] cookies = {
+        		new Cookie(AdminControllerHelper.SECURITY_COOKIE, encryptedValue),  
+        		new Cookie(AdminControllerHelper.TENANT_ID_COOKIE, TENANT_ID)
+        };
         
         new Expectations() {
             {mockHttpServletRequest.getRequestURI(); result=RESULT_URI;}
@@ -65,8 +69,11 @@ public class ConfigurationSecurityInterceptorTest {
     @Test
     public void expiredDateTest() throws Exception {
         String oldDateString = new DateTime().minusDays(2).toString();
-        String encryptedValue = ConfigurationSecurityInterceptor.encrypt(oldDateString, SHARED_SECRET); 
-        final Cookie[] cookies = {new Cookie(AdminControllerHelper.SECURITY_COOKIE, encryptedValue)};
+        String encryptedValue = ConfigurationSecurityInterceptor.encrypt(oldDateString, SHARED_SECRET, TENANT_ID); 
+        final Cookie[] cookies = {
+        		new Cookie(AdminControllerHelper.SECURITY_COOKIE, encryptedValue),  
+        		new Cookie(AdminControllerHelper.TENANT_ID_COOKIE, TENANT_ID)
+        };
         
         new Expectations() {
             {mockHttpServletRequest.getRequestURI(); result=RESULT_URI;}
@@ -83,8 +90,11 @@ public class ConfigurationSecurityInterceptorTest {
     @Test
     public void validTest() throws Exception {
         String oldDateString = new DateTime().toString();
-        String encryptedValue = ConfigurationSecurityInterceptor.encrypt(oldDateString, SHARED_SECRET); 
-        final Cookie[] cookies = {new Cookie(AdminControllerHelper.SECURITY_COOKIE, encryptedValue)};
+        String encryptedValue = ConfigurationSecurityInterceptor.encrypt(oldDateString, SHARED_SECRET, TENANT_ID); 
+        final Cookie[] cookies = {
+        		new Cookie(AdminControllerHelper.SECURITY_COOKIE, encryptedValue),  
+        		new Cookie(AdminControllerHelper.TENANT_ID_COOKIE, TENANT_ID)
+        };
         
         new Expectations() {
             {mockHttpServletRequest.getRequestURI(); result=RESULT_URI;}
