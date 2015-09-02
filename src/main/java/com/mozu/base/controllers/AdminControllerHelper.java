@@ -51,21 +51,16 @@ public class AdminControllerHelper {
             
             String decodedBody = URLDecoder.decode(body, "ISO-8859-1");
         
-        // validate request
-            if (!Crypto.isRequestValid(apiContext, decodedBody)) {
-                logger.warn("Unauthorized request");
-                isAuthorized = false;
-            } else {
+            // validate request by making sure it can be decrypted and the tenant id in the URLs in the boxy matches contains the tenantId in the calling URL.
+            if (Crypto.isRequestValid(apiContext, decodedBody) && decodedBody.contains("t"+tenantId+".")) {
                 isAuthorized = true;
+                String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
+                
+                httpResponse.addCookie(new Cookie(SECURITY_COOKIE, 
+                        ConfigurationSecurityInterceptor.encrypt(DateTime.now().toString(), 
+                        		encryptKey, tenantId)));
+                httpResponse.addCookie(new Cookie(TENANT_ID_COOKIE, tenantId));
             }
-            
-            String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
-           
-            httpResponse.addCookie(new Cookie(SECURITY_COOKIE, 
-                    ConfigurationSecurityInterceptor.encrypt(DateTime.now().toString(), 
-                    		encryptKey, tenantId)));
-            httpResponse.addCookie(new Cookie(TENANT_ID_COOKIE, tenantId));
-
         } catch (Exception e) {
             logger.warn("Validation exception: " + e.getMessage());
             isAuthorized = false;
