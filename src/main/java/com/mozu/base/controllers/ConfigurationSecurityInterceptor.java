@@ -35,13 +35,15 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
 
         Cookie[] cookies = request.getCookies();
-        for (int i=0;i<cookies.length;i++) {
-            if (cookies[i].getName().equals(AdminControllerHelper.SECURITY_COOKIE)) {
-                securityToken = cookies[i].getValue();
-            }
-            if (cookies[i].getName().equals(AdminControllerHelper.TENANT_ID_COOKIE)) {
-                tenantId = cookies[i].getValue();
-            }
+        if (cookies != null) {
+	        for (int i=0;i<cookies.length;i++) {
+	            if (cookies[i].getName().equals(AdminControllerHelper.SECURITY_COOKIE)) {
+	                securityToken = cookies[i].getValue();
+	            }
+	            if (cookies[i].getName().equals(AdminControllerHelper.TENANT_ID_COOKIE)) {
+	                tenantId = cookies[i].getValue();
+	            }
+	        }
         }
         try {
             String decryptedValue = decrypt(securityToken, encryptKey, tenantId);
