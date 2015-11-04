@@ -25,11 +25,6 @@ public class BaseServletListener implements ServletContextListener{
             Driver driver = drivers.nextElement();
             try {
                 logger.debug("Deregister driver: " + driver.getClass().getName());
-                try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					logger.warn(e.getMessage(), e);
-				}
                 DriverManager.deregisterDriver(driver);
             } catch (SQLException e) {
                 logger.warn("Error deregistering driver: " + e.getMessage());
