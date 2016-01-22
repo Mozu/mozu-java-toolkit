@@ -26,6 +26,8 @@ public class MozuAppAuthenticator {
     String baseAppAuthUrl;
     @Value("${BasePciUrl: }")
     String basePciUrl;
+    @Value("${BaseDevPciUrl: }")
+    String baseDevPciUrl;
     @Value("${spice: }")
     String spice;
 	
@@ -41,6 +43,9 @@ public class MozuAppAuthenticator {
             
             if (!StringUtils.isEmpty(baseAppAuthUrl))
             	MozuConfig.setBaseUrl(baseAppAuthUrl);
+            
+            if (!StringUtils.isEmpty(baseDevPciUrl))
+            	MozuConfig.setBaseDevPciUrl(baseDevPciUrl);
             
             if (!StringUtils.isEmpty(basePciUrl))
             	MozuConfig.setBasePciUrl(basePciUrl);
