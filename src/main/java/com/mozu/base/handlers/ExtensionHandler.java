@@ -70,7 +70,7 @@ public class ExtensionHandler {
 		for(EntityContainer container: collection.getItems()) {
 			String id = container.getId();
 			SubnavLink link = mapper.readValue(container.getItem().toString(), SubnavLink.class);
-			if (link.getParentId().equals(subNavLink.getParentId()) &&
+			if (link.getParentId() != null && link.getParentId().equals(subNavLink.getParentId()) &&
 			        Arrays.equals(link.getPath(), subNavLink.getPath())) {
 			    JsonNode node = mapper.valueToTree(subNavLink);
 				entityResource.updateEntity(node, ENTITYNAME, id);	
