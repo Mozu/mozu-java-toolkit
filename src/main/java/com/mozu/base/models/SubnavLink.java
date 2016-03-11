@@ -16,7 +16,7 @@ public class SubnavLink {
 	private String badgeInitials;
 	private String badgeImage;
 	
-	private DisplayMode displayMode;
+	private DisplayMode displayMode = DisplayMode.modal;
 	
 	public ExtensionParent getParentId() {
 		return parent;
