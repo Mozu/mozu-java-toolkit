@@ -30,6 +30,8 @@ public class MozuAppAuthenticator {
     String baseDevPciUrl;
     @Value("${spice: }")
     String spice;
+    @Value("${defaultEventRequestTimeout}")
+    String defaultEventRequestTimeout;
 	
 	@PostConstruct
 	public void appAuthentication() {
@@ -49,6 +51,9 @@ public class MozuAppAuthenticator {
             
             if (!StringUtils.isEmpty(basePciUrl))
             	MozuConfig.setBasePciUrl(basePciUrl);
+           
+            if (!StringUtils.isEmpty(defaultEventRequestTimeout))
+            	MozuConfig.setDefaultEventRequestTimeout(Integer.parseInt(defaultEventRequestTimeout));
             
             AppAuthenticator.initialize(appAuthInfo);
             logger.info("Auth ticket : "+AppAuthenticator.getInstance().getAppAuthTicket().getAccessToken());
