@@ -76,7 +76,7 @@ dependencies {
 
 
     compile ('com.mozu:mozu-java-security:1.0.2')
-    compile ("com.mozu:mozu-api-java:1.19.7") {
+    compile ("com.mozu:mozu-api-java:+") {
 
         exclude group: 'mysql'
         exclude group: 'xerces'
