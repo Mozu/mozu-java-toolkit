@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mozu-java-toolkit.iml" filepath="$PROJECT_DIR$/.idea/modules/mozu-java-toolkit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mozu-java-toolkit_main.iml" filepath="$PROJECT_DIR$/.idea/modules/mozu-java-toolkit_main.iml" group="mozu-java-toolkit" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mozu-java-toolkit_test.iml" filepath="$PROJECT_DIR$/.idea/modules/mozu-java-toolkit_test.iml" group="mozu-java-toolkit" />
+    </modules>
+  </component>
+</project>
