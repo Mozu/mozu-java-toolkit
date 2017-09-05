@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.8
 
 archivesBaseName='mozu-api-toolkit'
 group='com.mozu'
@@ -35,7 +35,7 @@ processResources{
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
+    gradleVersion = '3.2.1'
 }
 
 repositories {
