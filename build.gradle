@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.8
 
 archivesBaseName='mozu-api-toolkit'
 group='com.mozu'
@@ -15,7 +15,7 @@ if (hasProperty("teamcity")) {
     }
     else {
 // Manually insert the version numbers here when building outside of TeamCity
-    version = '1.1.6-SNAPSHOT'
+    version = '2.0.0-SNAPSHOT'
 
 }
 
@@ -76,7 +76,7 @@ dependencies {
 
 
     compile ('com.mozu:mozu-java-security:1.0.2')
-    compile ("com.mozu:mozu-api-java:[1.24.8,)") {
+    compile ("com.mozu:mozu-api-java:[2.0.0,)") {
 
         exclude group: 'mysql'
         exclude group: 'xerces'
