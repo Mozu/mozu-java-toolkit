@@ -15,7 +15,7 @@ if (hasProperty("teamcity")) {
     }
     else {
 // Manually insert the version numbers here when building outside of TeamCity
-    version = '2.0.0-SNAPSHOT'
+    version = '2.1.0-SNAPSHOT'
 
 }
 
@@ -76,7 +76,7 @@ dependencies {
 
 
     compile ('com.mozu:mozu-java-security:1.0.2')
-    compile ("com.mozu:mozu-api-java:[2.0.0,)") {
+    compile ("com.mozu:mozu-api-java:[2.1.0,)") {
 
         exclude group: 'mysql'
         exclude group: 'xerces'
