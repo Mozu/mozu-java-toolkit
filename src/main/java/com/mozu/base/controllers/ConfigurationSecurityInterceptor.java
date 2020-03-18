@@ -67,7 +67,15 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     }
     
     public static String encrypt(String data, String sharedSecret, String tenantId) throws Exception {
+    	logger.info("Encrypting for tenant {}", tenantId);
+
         int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
+        boolean isCryptoStrengthLimied = keyLength == Integer.MAX_VALUE;
+        
+        logger.debug("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "limited" : "Unlimited");
+        if (!isCryptoStrengthLimied) {
+        	// TODO What to return in this case
+        }
         String startKeyString = String.format("%s%s", sharedSecret, tenantId);
         String keyString = startKeyString.substring(startKeyString.length()-keyLength);
         
@@ -75,11 +83,21 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         Cipher cipher = Cipher.getInstance("Blowfish");
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encrypted = cipher.doFinal(data.getBytes());
+        
+        logger.info("Encryption successful");
         return Base64.encodeBase64String(encrypted);
     }
 
     protected static String decrypt(String encryptedString, String sharedSecret, String tenantId) throws Exception {
-        int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
+    	logger.info("Encrypting for tenant {}", tenantId);
+    	
+    	int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
+        boolean isCryptoStrengthLimied = keyLength == Integer.MAX_VALUE;
+        
+        logger.debug("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "limited" : "Unlimited");
+        if (!isCryptoStrengthLimied) {
+        	// TODO What to return in this case
+        }
         String startKeyString = String.format("%s%s", sharedSecret, tenantId);
         String keyString = startKeyString.substring(startKeyString.length()-keyLength);
         
@@ -88,6 +106,8 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] encrypted = Base64.decodeBase64(encryptedString.getBytes());
         byte[] decrypted = cipher.doFinal(encrypted);
+        
+        logger.info("Decryption successful");
         return new String(decrypted);
     }
 

@@ -1,6 +1,7 @@
 package com.mozu.base.controllers;
 
 import java.net.URLDecoder;
+import java.text.MessageFormat;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +46,9 @@ public class AdminControllerHelper {
             String dateKey = httpRequest.getParameter("dt");
             String tenantId = httpRequest.getParameter("tenantId");
             
+            logger.info("Http request parameters: tenantId={}, date={}, messageHash={}", 
+            		tenantId, dateKey, msgHash);
+            
             ApiContext apiContext = new MozuApiContext(new Integer(tenantId));
             apiContext.setHeaderDate(dateKey);
             apiContext.setHmacSha256(msgHash);
@@ -53,6 +57,7 @@ public class AdminControllerHelper {
         
             // validate request by making sure it can be decrypted and the tenant id in the URLs in the boxy matches contains the tenantId in the calling URL.
             if (Crypto.isRequestValid(apiContext, decodedBody) && decodedBody.contains("t"+tenantId+".")) {
+            	logger.debug("The request is valid");
                 isAuthorized = true;
                 String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
                 
@@ -65,6 +70,8 @@ public class AdminControllerHelper {
             logger.warn("Validation exception: " + e.getMessage());
             isAuthorized = false;
         }
+        
+        logger.debug("Is authorized: {}", isAuthorized);
         return isAuthorized;
     }
 
