@@ -67,12 +67,12 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     }
     
     public static String encrypt(String data, String sharedSecret, String tenantId) throws Exception {
-    	logger.info("Encrypting for tenant {}", tenantId);
+    	logger.info("Encrypting for data {} for tenant {} with key {}", data, tenantId, sharedSecret);
 
         int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
         boolean isCryptoStrengthLimied = keyLength == Integer.MAX_VALUE;
         
-        logger.debug("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "limited" : "Unlimited");
+        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "limited" : "Unlimited");
         if (!isCryptoStrengthLimied) {
         	// TODO What to return in this case
         }
@@ -84,8 +84,9 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encrypted = cipher.doFinal(data.getBytes());
         
-        logger.info("Encryption successful");
-        return Base64.encodeBase64String(encrypted);
+        String encryptedString = Base64.encodeBase64String(encrypted);
+        logger.info("Encrypted string: {}", encryptedString);
+        return encryptedString;
     }
 
     protected static String decrypt(String encryptedString, String sharedSecret, String tenantId) throws Exception {
@@ -94,7 +95,7 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     	int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
         boolean isCryptoStrengthLimied = keyLength == Integer.MAX_VALUE;
         
-        logger.debug("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "limited" : "Unlimited");
+        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "limited" : "Unlimited");
         if (!isCryptoStrengthLimied) {
         	// TODO What to return in this case
         }
@@ -107,8 +108,9 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         byte[] encrypted = Base64.decodeBase64(encryptedString.getBytes());
         byte[] decrypted = cipher.doFinal(encrypted);
         
-        logger.info("Decryption successful");
-        return new String(decrypted);
+        String decryptedString = new String(decrypted);
+        logger.info("Decryption string: {}", decryptedString);
+        return decryptedString;
     }
 
 }

@@ -57,7 +57,7 @@ public class AdminControllerHelper {
         
             // validate request by making sure it can be decrypted and the tenant id in the URLs in the boxy matches contains the tenantId in the calling URL.
             if (Crypto.isRequestValid(apiContext, decodedBody) && decodedBody.contains("t"+tenantId+".")) {
-            	logger.debug("The request is valid");
+            	logger.info("The request is valid");
                 isAuthorized = true;
                 String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
                 
@@ -71,7 +71,7 @@ public class AdminControllerHelper {
             isAuthorized = false;
         }
         
-        logger.debug("Is authorized: {}", isAuthorized);
+        logger.info("Is authorized: {}", isAuthorized);
         return isAuthorized;
     }
 
