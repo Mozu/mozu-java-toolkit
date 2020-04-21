@@ -69,13 +69,14 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     public static String encrypt(String data, String sharedSecret, String tenantId) throws Exception {
     	logger.info("Encrypting for data {} for tenant {} with key {}", data, tenantId, sharedSecret);
 
-        int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
-        boolean isCryptoStrengthLimied = keyLength == Integer.MAX_VALUE;
+        int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish");
+        boolean isCryptoStrengthLimied = keyLength != Integer.MAX_VALUE;
         
-        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "limited" : "Unlimited");
-        if (!isCryptoStrengthLimied) {
-        	// TODO What to return in this case
-        }
+        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "Limited" : "Unlimited");
+        
+        int divisor = isCryptoStrengthLimied ? 8 : 134217727;
+        keyLength = keyLength / divisor;
+        
         String startKeyString = String.format("%s%s", sharedSecret, tenantId);
         String keyString = startKeyString.substring(startKeyString.length()-keyLength);
         
@@ -92,13 +93,14 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     protected static String decrypt(String encryptedString, String sharedSecret, String tenantId) throws Exception {
     	logger.info("Encrypting for tenant {}", tenantId);
     	
-    	int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
-        boolean isCryptoStrengthLimied = keyLength == Integer.MAX_VALUE;
+    	int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish");
+        boolean isCryptoStrengthLimied = keyLength != Integer.MAX_VALUE;
         
-        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "limited" : "Unlimited");
-        if (!isCryptoStrengthLimied) {
-        	// TODO What to return in this case
-        }
+        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "Limited" : "Unlimited");
+
+        int divisor = isCryptoStrengthLimied ? 8 : 134217727;
+        keyLength = keyLength / divisor;
+        
         String startKeyString = String.format("%s%s", sharedSecret, tenantId);
         String keyString = startKeyString.substring(startKeyString.length()-keyLength);
         
