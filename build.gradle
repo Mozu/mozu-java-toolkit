@@ -75,8 +75,8 @@ dependencies {
     compile ("org.springframework.integration:spring-integration-core:3.0.2.RELEASE");
 
 
-    compile ('com.mozu:mozu-java-security:1.0.3')
-    compile ("com.mozu:mozu-api-java:2.3.4") {
+    compile ('com.mozu:mozu-java-security:1.0.2')
+    compile ("com.mozu:mozu-api-java:[1.24.8,)") {
 
         exclude group: 'mysql'
         exclude group: 'xerces'
