@@ -67,7 +67,16 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     }
     
     public static String encrypt(String data, String sharedSecret, String tenantId) throws Exception {
-        int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
+    	logger.info("Encrypting for data {} for tenant {} with key {}", data, tenantId, sharedSecret);
+
+        int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish");
+        boolean isCryptoStrengthLimied = keyLength != Integer.MAX_VALUE;
+        
+        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "Limited" : "Unlimited");
+        
+        int divisor = isCryptoStrengthLimied ? 8 : 134217727;
+        keyLength = keyLength / divisor;
+        
         String startKeyString = String.format("%s%s", sharedSecret, tenantId);
         String keyString = startKeyString.substring(startKeyString.length()-keyLength);
         
@@ -75,11 +84,23 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         Cipher cipher = Cipher.getInstance("Blowfish");
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encrypted = cipher.doFinal(data.getBytes());
-        return Base64.encodeBase64String(encrypted);
+        
+        String encryptedString = Base64.encodeBase64String(encrypted);
+        logger.info("Encrypted string: {}", encryptedString);
+        return encryptedString;
     }
 
     protected static String decrypt(String encryptedString, String sharedSecret, String tenantId) throws Exception {
-        int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish")/8;
+    	logger.info("Encrypting for tenant {}", tenantId);
+    	
+    	int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish");
+        boolean isCryptoStrengthLimied = keyLength != Integer.MAX_VALUE;
+        
+        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "Limited" : "Unlimited");
+
+        int divisor = isCryptoStrengthLimied ? 8 : 134217727;
+        keyLength = keyLength / divisor;
+        
         String startKeyString = String.format("%s%s", sharedSecret, tenantId);
         String keyString = startKeyString.substring(startKeyString.length()-keyLength);
         
@@ -88,7 +109,10 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] encrypted = Base64.decodeBase64(encryptedString.getBytes());
         byte[] decrypted = cipher.doFinal(encrypted);
-        return new String(decrypted);
+        
+        String decryptedString = new String(decrypted);
+        logger.info("Decryption string: {}", decryptedString);
+        return decryptedString;
     }
 
 }
