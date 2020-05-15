@@ -387,7 +387,6 @@ public class EntityHandlerTest {
 
     @Test
     public void deleteEntityTest() throws Exception {
-    	System.out.println();
         new MockUp<ApplicationUtils>() {
             @Mock AppInfo getAppInfo() {
                 return mockAppInfo;
