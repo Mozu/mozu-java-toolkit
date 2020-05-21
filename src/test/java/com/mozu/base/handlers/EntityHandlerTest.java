@@ -2,6 +2,7 @@ package com.mozu.base.handlers;
 
 import static org.junit.Assert.*;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -394,7 +395,9 @@ public class EntityHandlerTest {
         
         new MockUp<EntityResource>() {
             @Mock void $init(ApiContext apiContext) {}
-            @Mock void deleteEntity(String entityListFullName, String id) throws Exception {}
+            @Mock InputStream deleteEntity(String entityListFullName, String id) throws Exception {
+            	return null;
+            }
         };
 
         new Expectations() {
@@ -415,7 +418,7 @@ public class EntityHandlerTest {
         
         new MockUp<EntityResource>() {
             @Mock void $init(ApiContext apiContext) {}
-            @Mock void deleteEntity(String entityListFullName, String id) throws Exception {
+            @Mock InputStream deleteEntity(String entityListFullName, String id) throws Exception {
                 ApiError apiError = new ApiError();
                 apiError.setErrorCode("ITEM_NOT_FOUND");
                 throw new ApiException("Test message", apiError);
