@@ -28,6 +28,7 @@ import com.mozu.api.utils.JsonUtils;
 import com.mozu.base.models.AppInfo;
 import com.mozu.base.models.EntityCollection;
 import com.mozu.base.utils.ApplicationUtils;
+import com.mozu.logger.MozuLogger;
 
 public class EntityHandlerTest {
 
@@ -42,9 +43,22 @@ public class EntityHandlerTest {
     @Mocked com.mozu.api.contracts.mzdb.EntityCollection mockEntityCollection;
 
     @Before
-    public void setUp() throws Exception {
-    }
+	public void setUp() throws Exception {
 
+		new MockUp<MozuLogger>() {			
+			@Mock
+			public void error(String msg) {
+				return;
+			}
+
+			@SuppressWarnings("rawtypes")
+			@Mock
+			private void initLogger(Class cls) {
+				return;
+			};
+		};
+	}
+    
     @After
     public void tearDown() throws Exception {
     }

@@ -1,5 +1,7 @@
 package com.mozu.base.controllers;
 
+import java.text.MessageFormat;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
@@ -7,17 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.mozu.encryptor.PropertyEncryptionUtil;
+import com.mozu.logger.LoggerContextManager;
+import com.mozu.logger.MozuLogger;
 
 public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigurationSecurityInterceptor.class);
+    private static final MozuLogger logger = MozuLogger.getLogger(ConfigurationSecurityInterceptor.class);
 
     @Value("${SharedSecret}")
     String sharedSecret;
@@ -29,10 +32,10 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         logger.debug("Security interceptor for URI: " + request.getRequestURI());
+        
         String securityToken = null;
         boolean isValid = false;
-        String tenantId = null;
-        String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
+        String tenantId = StringUtils.EMPTY;
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -45,6 +48,13 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
 	            }
 	        }
         }
+
+        LoggerContextManager.setLoggingContext(tenantId);
+        
+        logger.debug(MessageFormat.format("Cookies retrieved from request: securityToken - {0} and tenantId - {1}", 
+        		securityToken, tenantId));
+        
+        String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
         try {
             String decryptedValue = decrypt(securityToken, encryptKey, tenantId);
             DateTime dt = new DateTime(decryptedValue);
@@ -62,17 +72,18 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
             logger.warn(msg);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-
+        LoggerContextManager.clearLoggingContext();
         return isValid;
     }
     
     public static String encrypt(String data, String sharedSecret, String tenantId) throws Exception {
-    	logger.info("Encrypting for data {} for tenant {} with key {}", data, tenantId, sharedSecret);
+    	logger.info(MessageFormat.format("Encrypting for data {0} for tenant {1} with key {2}",
+    			data, tenantId, sharedSecret));
 
         int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish");
-        boolean isCryptoStrengthLimied = keyLength != Integer.MAX_VALUE;
+        boolean isCryptoStrengthLimied = keyLength != Integer.MAX_VALUE; 
         
-        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "Limited" : "Unlimited");
+        logger.info(MessageFormat.format("Java Cryptographic strength policy is set to : {0}", isCryptoStrengthLimied ? "Limited" : "Unlimited"));
         
         int divisor = isCryptoStrengthLimied ? 8 : 134217727;
         keyLength = keyLength / divisor;
@@ -86,17 +97,17 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         byte[] encrypted = cipher.doFinal(data.getBytes());
         
         String encryptedString = Base64.encodeBase64String(encrypted);
-        logger.info("Encrypted string: {}", encryptedString);
+        logger.info("Encrypted string: " + encryptedString);
         return encryptedString;
     }
 
     protected static String decrypt(String encryptedString, String sharedSecret, String tenantId) throws Exception {
-    	logger.info("Encrypting for tenant {}", tenantId);
+    	logger.info("Encrypting for tenant " + tenantId);
     	
     	int keyLength = Cipher.getMaxAllowedKeyLength("Blowfish");
         boolean isCryptoStrengthLimied = keyLength != Integer.MAX_VALUE;
         
-        logger.info("Java Cryptographic strength policy is set to : {}", isCryptoStrengthLimied ? "Limited" : "Unlimited");
+        logger.info(MessageFormat.format("Java Cryptographic strength policy is set to : {0}", isCryptoStrengthLimied ? "Limited" : "Unlimited"));
 
         int divisor = isCryptoStrengthLimied ? 8 : 134217727;
         keyLength = keyLength / divisor;
@@ -111,7 +122,7 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         byte[] decrypted = cipher.doFinal(encrypted);
         
         String decryptedString = new String(decrypted);
-        logger.info("Decryption string: {}", decryptedString);
+        logger.info("Decryption string: " + decryptedString);
         return decryptedString;
     }
 

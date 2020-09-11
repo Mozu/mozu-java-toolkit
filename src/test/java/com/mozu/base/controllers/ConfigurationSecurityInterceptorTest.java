@@ -8,12 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import mockit.Deencapsulation;
 import mockit.Expectations;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Mocked;
 
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.mozu.logger.MozuLogger;
 
 public class ConfigurationSecurityInterceptorTest {
     protected static final String RESULT_URI = "/result/uri";
@@ -23,10 +27,39 @@ public class ConfigurationSecurityInterceptorTest {
     @Mocked HttpServletRequest mockHttpServletRequest;
     @Mocked HttpServletResponse mockHttpServletResponse;
 
-    @Before
-    public void setUp() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
 
+		new MockUp<MozuLogger>() {
+			@Mock
+
+			public void debug(String msg) {
+				return;
+			}
+			
+			@Mock
+			public void error(String msg) {
+				return;
+			}
+
+			@Mock
+			public void info(String msg) {
+				return;
+			}
+			
+			@Mock
+			public void warn(String msg) {
+				return;
+			}
+
+			@SuppressWarnings("rawtypes")
+			@Mock
+			private void initLogger(Class cls) {
+				return;
+			};
+		};
+	}
+	
     @After
     public void tearDown() throws Exception {
     }

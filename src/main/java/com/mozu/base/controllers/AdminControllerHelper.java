@@ -17,9 +17,10 @@ import com.mozu.api.MozuApiContext;
 import com.mozu.api.security.AppAuthenticator;
 import com.mozu.api.security.Crypto;
 import com.mozu.encryptor.PropertyEncryptionUtil;
+import com.mozu.logger.MozuLogger;
 
 public class AdminControllerHelper {
-    private static final Logger logger = LoggerFactory.getLogger(AdminControllerHelper.class);
+	private static final MozuLogger logger = MozuLogger.getLogger(AdminControllerHelper.class);
     private String sharedSecret;
     private String spiceKey;
 
@@ -46,8 +47,8 @@ public class AdminControllerHelper {
             String dateKey = httpRequest.getParameter("dt");
             String tenantId = httpRequest.getParameter("tenantId");
             
-            logger.info("Http request parameters: tenantId={}, date={}, messageHash={}", 
-            		tenantId, dateKey, msgHash);
+            logger.info(MessageFormat.format("Http request parameters: tenantId={0}, date={1}, messageHash={2}", 
+            		tenantId, dateKey, msgHash));
             
             ApiContext apiContext = new MozuApiContext(new Integer(tenantId));
             apiContext.setHeaderDate(dateKey);
@@ -71,7 +72,7 @@ public class AdminControllerHelper {
             isAuthorized = false;
         }
         
-        logger.info("Is authorized: {}", isAuthorized);
+        logger.info("Is authorized: " + isAuthorized);
         return isAuthorized;
     }
 

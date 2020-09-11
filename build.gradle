@@ -15,7 +15,7 @@ if (hasProperty("teamcity")) {
     }
     else {
 // Manually insert the version numbers here when building outside of TeamCity
-    version = '1.1.10'
+    version = '2.0.2-SNAPSHOT'
 
 }
 
@@ -40,9 +40,11 @@ task wrapper(type: Wrapper) {
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven {
         url "https://oss.sonatype.org/content/groups/staging/"
+    }
+    maven {
+      url "http://ng-repo.dev.kibocommerce.com:8081/repository/ng-maven-group/"
     }
 
 }
@@ -74,7 +76,7 @@ dependencies {
     compile ("org.springframework.batch:spring-batch-core:2.2.3.RELEASE");
     compile ("org.springframework.integration:spring-integration-core:3.0.2.RELEASE");
 
-
+	compile ("com.mozu:mozu-api-logger:1.2038.0-COM-2215-2")
     compile ('com.mozu:mozu-java-security:1.0.2')
     compile ("com.mozu:mozu-api-java:[1.24.8,)") {
 
