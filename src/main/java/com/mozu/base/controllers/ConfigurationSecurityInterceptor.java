@@ -7,12 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.mozu.base.utils.LoggerContextManager;
 import com.mozu.encryptor.PropertyEncryptionUtil;
 
 public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter {
@@ -31,7 +33,7 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
         logger.debug("Security interceptor for URI: " + request.getRequestURI());
         String securityToken = null;
         boolean isValid = false;
-        String tenantId = null;
+        String tenantId = StringUtils.EMPTY;
         String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
 
         Cookie[] cookies = request.getCookies();
@@ -45,6 +47,8 @@ public class ConfigurationSecurityInterceptor extends HandlerInterceptorAdapter 
 	            }
 	        }
         }
+        logger.info("Is TenantId cookie present in request : {}", StringUtils.isNotBlank(tenantId));
+        LoggerContextManager.setTenantLoggingContext(tenantId);
         try {
             String decryptedValue = decrypt(securityToken, encryptKey, tenantId);
             DateTime dt = new DateTime(decryptedValue);
