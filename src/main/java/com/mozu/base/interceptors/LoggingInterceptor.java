@@ -1,5 +1,8 @@
 package com.mozu.base.interceptors;
 
+import java.io.InputStream;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +21,10 @@ public class LoggingInterceptor extends HandlerInterceptorAdapter {
 	 */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    	LoggerContextManager.setApplicationLoggingContext(request);
+		ServletContext context = request.getSession().getServletContext();
+		InputStream manifestStream = context.getResourceAsStream("/META-INF/MANIFEST.MF");
+
+		LoggerContextManager.setApplicationLoggingContext(manifestStream);
 		return true;
     }
     

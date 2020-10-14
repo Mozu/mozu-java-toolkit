@@ -5,9 +5,6 @@ import java.io.InputStream;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.MDC;
 
 import com.mozu.base.models.AppInfo;
@@ -30,11 +27,11 @@ public class LoggerContextManager {
 		MDC.put(PACKAGE_NAME, appInfo.getPackage());
 		MDC.put(SDK_VERSION, appInfo.getMozuSdkVersion());
 	}
-	
-	public static void setApplicationLoggingContext(final HttpServletRequest request) {
+		
+	public static void setApplicationLoggingContext(final InputStream manifestStream) {
 		setApplicationLoggingContext();
 		
-		String buildVersion = getBuildVersion(request);
+		String buildVersion = getBuildVersion(manifestStream);
     	
 		MDC.put(BUILD_VERSION, buildVersion);
 	}
@@ -61,11 +58,8 @@ public class LoggerContextManager {
 		MDC.remove(SDK_VERSION);
 		MDC.remove(VERSION);
 	}
-
-	private static String getBuildVersion(HttpServletRequest request) {
-		ServletContext context = request.getSession().getServletContext();
-		InputStream manifestStream = context.getResourceAsStream("/META-INF/MANIFEST.MF");
-
+	
+	private static String getBuildVersion(final InputStream manifestStream) {
 		String buildVersion = "";
 		if (manifestStream != null) {
 			Manifest manifest;
@@ -77,7 +71,7 @@ public class LoggerContextManager {
 			}
 		}
 
-		if (buildVersion == null) {
+		if (buildVersion == null || buildVersion.isEmpty()) {
 			buildVersion = "Unknown Build";
 		}
 		return buildVersion;
