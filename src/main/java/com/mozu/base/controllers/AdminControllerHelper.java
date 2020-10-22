@@ -61,10 +61,16 @@ public class AdminControllerHelper {
                 isAuthorized = true;
                 String encryptKey = PropertyEncryptionUtil.decryptProperty(spiceKey, sharedSecret);
                 
-                httpResponse.addCookie(new Cookie(SECURITY_COOKIE, 
-                        ConfigurationSecurityInterceptor.encrypt(DateTime.now().toString(), 
-                        		encryptKey, tenantId)));
-                httpResponse.addCookie(new Cookie(TENANT_ID_COOKIE, tenantId));
+				String securityToken = ConfigurationSecurityInterceptor.encrypt(DateTime.now().toString(), encryptKey,
+						tenantId);
+
+				// In Chrome v80, default SameSite=lax and third party cookies was not working.
+				// So, explicitly setting up the SameSite=none
+				String securityCookie = SECURITY_COOKIE + "=" + securityToken + "; secure; SameSite=none";
+				String tenantCookie = TENANT_ID_COOKIE + "=" + tenantId + "; secure; SameSite=none";
+
+				httpResponse.addHeader("Set-Cookie", securityCookie);
+				httpResponse.addHeader("Set-Cookie", tenantCookie);
             }
         } catch (Exception e) {
             logger.warn("Validation exception: " + e.getMessage());
