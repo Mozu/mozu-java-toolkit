@@ -14,6 +14,10 @@
 	
     <!-- Configures Handler Interceptors -->
     <mvc:interceptors>
+    	<mvc:interceptor>
+	   	    <mvc:mapping path="/**" />
+		    <beans:bean class="com.mozu.base.interceptors.LoggingInterceptor" />
+         </mvc:interceptor>
          <mvc:interceptor>
             <mvc:mapping path="/api/**"/>
             <beans:bean class="com.mozu.base.controllers.ConfigurationSecurityInterceptor" />
