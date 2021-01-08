@@ -122,6 +122,13 @@ artifacts {
 }
 
 if (hasProperty("sonatypeUsername")) {
+    println "Property defined: sonatypeUsername = " + sonatypeUsername;
+} else {
+    println "Property not defined: sonatypeUsername"
+}
+
+
+if (hasProperty("sonatypeUsername")) {
     uploadArchives {
         repositories {
             mavenDeployer {
